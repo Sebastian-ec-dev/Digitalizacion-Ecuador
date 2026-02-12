@@ -1,0 +1,783 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard Avanzado: Digitalización Ecuador vs China (Datos 2025-2026)</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #f0f4f8, #d9e2ec);
+      margin: 0;
+      padding: 20px;
+      color: #2c3e50;
+    }
+
+    .dashboard {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    h1 {
+      color: #1a5276;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      font-size: 1.1em;
+      color: #555;
+    }
+
+    .tab {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 25px;
+    }
+
+    .tab button {
+      background: #3498db;
+      color: white;
+      border: none;
+      padding: 14px 24px;
+      margin: 5px;
+      cursor: pointer;
+      border-radius: 30px;
+      font-weight: bold;
+      transition: all 0.3s;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .tab button:hover {
+      background: #2980b9;
+      transform: translateY(-3px);
+    }
+
+    .tab button.active {
+      background: #1a5276;
+      transform: translateY(-3px);
+      box-shadow: 0 6px 15px rgba(26, 82, 118, 0.3);
+    }
+
+    .tabcontent {
+      display: none;
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+      animation: fadeIn 0.6s;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 25px;
+      margin: 30px 0;
+    }
+
+    .card {
+      background: #f8fbff;
+      border-radius: 12px;
+      padding: 25px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.06);
+      transition: transform 0.3s, box-shadow 0.3s;
+      text-align: center;
+    }
+
+    .card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
+    }
+
+    .card i {
+      font-size: 2.8em;
+      color: #3498db;
+      margin-bottom: 15px;
+    }
+
+    .card h3 {
+      margin: 10px 0;
+      color: #1a5276;
+    }
+
+    .value {
+      font-size: 2.5em;
+      font-weight: bold;
+      color: #e74c3c;
+    }
+
+    .china .value {
+      color: #e67e22;
+    }
+
+    .label {
+      font-size: 0.95em;
+      color: #777;
+      margin-top: 5px;
+    }
+
+    .chart-container {
+      margin: 30px auto;
+      max-width: 900px;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.06);
+    }
+
+    .comparison-text {
+      font-size: 1.1em;
+      line-height: 1.7;
+      margin: 20px 0;
+      text-align: justify;
+    }
+
+    .highlight {
+      background: #fffacd;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .definition {
+      margin-bottom: 20px;
+      padding: 15px;
+      background: #f0f8ff;
+      border-left: 5px solid #3498db;
+      border-radius: 5px;
+    }
+
+    .definition h4 {
+      margin: 0 0 10px;
+      color: #1a5276;
+    }
+
+    .slider-container {
+      margin: 30px 0;
+      text-align: center;
+    }
+
+    input[type="range"] {
+      width: 80%;
+      margin: 10px 0;
+    }
+
+    #yearValue {
+      font-weight: bold;
+      color: #3498db;
+    }
+
+    ul.detailed {
+      text-align: left;
+      padding-left: 20px;
+      line-height: 1.6;
+    }
+
+    ul.detailed li {
+      margin-bottom: 10px;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 50px;
+      padding: 20px;
+      color: #666;
+      font-size: 0.9em;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="dashboard">
+    <header>
+      <h1>Dashboard Avanzado: Digitalización Ecuador vs China</h1>
+      <p class="subtitle">Comparación basada en datos actualizados 2025-2026 (Huawei GDII/GDI, DataReportal, CNNIC, ONU
+        EGDI, BCE, DEUNA, CECE)</p>
+    </header>
+
+    <div class="tab">
+      <button class="tablinks active" onclick="openTab(event, 'Definiciones')">Definiciones</button>
+      <button class="tablinks" onclick="openTab(event, 'VistaGeneral')">Vista General</button>
+      <button class="tablinks" onclick="openTab(event, 'Indicadores')">Indicadores Clave</button>
+      <button class="tablinks" onclick="openTab(event, 'ImpactoEconomico')">Impacto Económico</button>
+      <button class="tablinks" onclick="openTab(event, 'CrecimientoPostPandemia')">Crecimiento Digital
+        Post-Pandemia</button>
+      <button class="tablinks" onclick="openTab(event, 'GraficosProyecciones')">Gráficos Comparativos y
+        Proyecciones</button>
+      <button class="tablinks" onclick="openTab(event, 'Politicas')">Políticas y Leyes</button>
+      <button class="tablinks" onclick="openTab(event, 'ConclusionRecomendaciones')">Conclusión y
+        Recomendaciones</button>
+    </div>
+
+    <div id="Definiciones" class="tabcontent" style="display: block">
+      <h2>Definiciones de Términos Clave</h2>
+      <div class="definition">
+        <h4>GDII (Global Digitalization and Intelligence Index)</h4>
+        <p>Índice Global de Digitalización e Inteligencia desarrollado por Huawei en 2025. Mide el progreso de las
+          economías en transformación digital e inteligente, cubriendo 90 economías (94% del PIB global). Incluye
+          indicadores como datos, talento ICT, tecnologías digitales/IA, conectividad, computación y ecosistemas de
+          innovación. Es una evolución del GDI, incorporando AI y economía inteligente.</p>
+      </div>
+      <div class="definition">
+        <h4>GDI (Global Digitalization Index)</h4>
+        <p>Índice Global de Digitalización de Huawei/IDC (2024). Evalúa 77 países con 42 indicadores en conectividad,
+          fundamentos digitales, energía verde y políticas. Clasifica países como Frontrunners (líderes) o Starters
+          (principiantes).</p>
+      </div>
+      <div class="definition">
+        <h4>EGDI (E-Government Development Index)</h4>
+        <p>Índice de Desarrollo de Gobierno Electrónico de la ONU. Mide la madurez de los servicios gubernamentales en
+          línea, infraestructura de telecomunicaciones y capital humano. Rangos: Muy Alto, Alto, Medio, Bajo.</p>
+      </div>
+      <div class="definition">
+        <h4>Penetración de Internet</h4>
+        <p>Porcentaje de la población que tiene acceso y usa internet activamente. Para China: 79.7% (junio 2025,
+          CNNIC). Para Ecuador: 83.9% (fin 2025, DataReportal). Nota: Aunque Ecuador tiene un porcentaje ligeramente
+          superior, esto no implica mayor digitalización general, ya que China lidera en escala absoluta (más de 1.123
+          mil millones de usuarios vs. 15.4 millones en Ecuador), profundidad de uso (e.g., adopción masiva de 5G, IA y
+          e-commerce), infraestructura avanzada y contribución económica (economía digital ~10% del PIB en China vs.
+          niveles bajos en Ecuador). El porcentaje alto en Ecuador refleja avances en acceso básico, pero con brechas
+          significativas en zonas rurales, calidad de conexión y aplicaciones productivas/económicas. En resumen, la
+          digitalización es multidimensional: el acceso es solo un aspecto, y China domina en madurez integral,
+          innovación y impacto económico, mientras Ecuador está en etapas emergentes con foco en inclusión.</p>
+      </div>
+      <div class="definition">
+        <h4>Economía Digital al PIB</h4>
+        <p>Contribución de las industrias digitales (e-commerce, servicios TIC, etc.) al Producto Interno Bruto. China
+          alcanzó ~10% en 2023, manteniéndose como pilar clave.</p>
+      </div>
+    </div>
+
+    <div id="VistaGeneral" class="tabcontent">
+      <h2>Vista General</h2>
+      <div class="comparison-text">
+        China se posiciona como líder global en digitalización con madurez avanzada, escala masiva y fuerte integración
+        económica (GDII 2025: ~67.8, basado en informes Huawei). Ecuador muestra avances notables en penetración de
+        internet pero permanece en etapas iniciales/intermedias (GDI 2024: 32.4; GDII aproximado ~30-32).
+        <br><br>
+        <strong>Fortalezas clave:</strong> Ecuador supera ligeramente a China en porcentaje de penetración de internet
+        (83.9% vs 79.7% a fin de 2025), pero esto no significa que Ecuador esté más digitalizado en general. El
+        porcentaje mide solo el acceso básico relativo a la población, pero ignora la escala (China tiene ~70 veces más
+        usuarios), la calidad (China con 5G ubicuo y velocidades superiores), el uso intensivo (aplicaciones de IA,
+        pagos digitales masivos) y el impacto económico (economía digital como motor de crecimiento en China).
+        Ecuador enfrenta brechas en infraestructura rural, adopción productiva y contribución al PIB. <br><br>
+        En Gobierno Electrónico (EGDI ONU 2024), China rankea 35 (0.8718 - Muy Alto), Ecuador 67 (0.7800 - Alto),
+        reflejando brecha en servicios online avanzados y escala.
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <i class="fas fa-trophy"></i>
+          <h3>Posición Global Digital</h3>
+          <p>China: Líder Frontrunner (Top 10 aprox.)</p>
+          <p>Ecuador: Starter / Intermedio (puesto ~63/77 en GDI 2024)</p>
+        </div>
+        <div class="card">
+          <i class="fas fa-users"></i>
+          <h3>Usuarios Internet</h3>
+          <p class="value china">1.123 mil millones</p>
+          <p class="label">China (junio 2025)</p>
+          <p class="value">15.4 millones</p>
+          <p class="label">Ecuador (fin 2025)</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="Indicadores" class="tabcontent">
+      <h2>Indicadores Clave 2025-2026</h2>
+      <div class="grid">
+        <div class="card">
+          <i class="fas fa-chart-line"></i>
+          <h3>Índice Digital (Huawei GDII/GDI)</h3>
+          <p class="value china">~67.8 (GDII 2025)</p>
+          <p>China</p>
+          <p class="value">~32 (GDI 2024 / GDII est.)</p>
+          <p>Ecuador</p>
+        </div>
+        <div class="card">
+          <i class="fas fa-wifi"></i>
+          <h3>Penetración Internet</h3>
+          <p class="value china">79.7%</p>
+          <p>China (junio 2025)</p>
+          <p class="value">83.9%</p>
+          <p>Ecuador (fin 2025)</p>
+        </div>
+        <div class="card">
+          <i class="fas fa-globe"></i>
+          <h3>Gobierno Electrónico (EGDI ONU 2024)</h3>
+          <p class="value china">0.8718 (Rank 35)</p>
+          <p>China</p>
+          <p class="value">0.7800 (Rank 67)</p>
+          <p>Ecuador</p>
+        </div>
+        <div class="card">
+          <i class="fas fa-dollar-sign"></i>
+          <h3>Economía Digital al PIB</h3>
+          <p class="value china">~10%+ (cumplido meta)</p>
+          <p>China</p>
+          <p class="value">No consolidado (bajo-moderado)</p>
+          <p>Ecuador</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="ImpactoEconomico" class="tabcontent">
+      <h2>Impacto Económico y Crecimiento Digital Post-Pandemia (Ecuador 2020-2026)</h2>
+
+      <div class="comparison-text">
+        La pandemia de COVID-19 (2020) fue un catalizador clave para la digitalización en Ecuador.
+        El confinamiento aceleró la adopción de e-commerce, pagos digitales y teletrabajo.
+        <strong>DEUNA</strong>, lanzada en 2020 como plataforma interoperable de pagos digitales (impulsada por el BCE y
+        sector privado), se convirtió en el principal motor de inclusión financiera y reducción del uso de efectivo.
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <i class="fas fa-users"></i>
+          <h3>Usuarios DEUNA (2025)</h3>
+          <p class="value">~6 millones</p>
+          <p class="label">(+80% vs 2024)</p>
+        </div>
+        <div class="card">
+          <i class="fas fa-store"></i>
+          <h3>Comercios Afiliados</h3>
+          <p class="value">+590.000</p>
+          <p class="label">Red de aceptación masiva</p>
+        </div>
+        <div class="card">
+          <i class="fas fa-shopping-cart"></i>
+          <h3>E-commerce 2025 (estimado)</h3>
+          <p class="value">>US$6.500 millones</p>
+          <p class="label">Crecimiento sostenido ~20% anual</p>
+        </div>
+        <div class="card">
+          <i class="fas fa-chart-line"></i>
+          <h3>Crecimiento E-commerce 2020-2024</h3>
+          <p class="value">+219%</p>
+          <p class="label">(2018-2023 según CECE)</p>
+        </div>
+      </div>
+
+      <h3>DEUNA: El Motor de los Pagos Digitales</h3>
+      <div class="card" style="text-align:left;">
+        <ul class="detailed">
+          <li><strong>Lanzamiento (2020)</strong>: Plataforma interoperable que permite transferencias instantáneas,
+            pagos QR, recargas y pagos de servicios básicos.</li>
+          <li><strong>Crecimiento 2025</strong>: 6 millones de usuarios y más de 590.000 comercios. Incluye pagos
+            offline, bot de WhatsApp y Deuna Jóvenes (12-17 años).</li>
+          <li><strong>Alianzas clave</strong>: Datafast (45.000 POS adicionales), 35 entidades financieras y
+            cooperativas.</li>
+          <li><strong>Impacto</strong>: Reducción significativa del uso de efectivo, mayor inclusión financiera
+            (especialmente en sectores no bancarizados) y transacciones mensuales por cientos de millones de dólares.
+          </li>
+        </ul>
+      </div>
+
+      <h3>Otros Impactos Económicos Relevantes</h3>
+      <div class="grid">
+        <div class="card">
+          <i class="fas fa-file-invoice-dollar"></i>
+          <h3>Facturación Electrónica (SRI)</h3>
+          <p>Ventas totales 2025: ~US$265.000 millones (+8,2% vs 2024). Mayor formalización y control fiscal.</p>
+        </div>
+        <div class="card">
+          <i class="fas fa-hand-holding-dollar"></i>
+          <h3>Inclusión Financiera</h3>
+          <p>Pagos digitales crecieron fuertemente post-pandemia. ~47-50% de adultos usan pagos electrónicos (BCE/Global
+            Findex). DEUNA fue clave en la inclusión de población rural y joven.</p>
+        </div>
+        <div class="card">
+          <i class="fas fa-briefcase"></i>
+          <h3>Empleo y Economía Digital</h3>
+          <p>Impulso a fintech, logística digital y empleos en TIC. Crecimiento del sector digital contribuye a la
+            recuperación económica y productividad.</p>
+        </div>
+      </div>
+
+      <div class="chart-container">
+        <canvas id="impactoChart"></canvas>
+      </div>
+      <p style="text-align:center; font-size:0.95em; color:#555;">
+        Evolución aproximada: Volumen E-commerce (US$ mil millones) y Usuarios DEUNA (millones)
+      </p>
+    </div>
+
+    <div id="CrecimientoPostPandemia" class="tabcontent">
+      <h2>Crecimiento de Penetración Digital Post-Pandemia y Rol de DEUNA</h2>
+
+      <div class="comparison-text">
+        La pandemia de COVID-19 (2020) marcó un punto de inflexión en la digitalización de Ecuador.
+        El confinamiento obligó a la población a adoptar rápidamente herramientas digitales.
+        La creación de <strong>DEUNA en 2020</strong> fue clave para acelerar este proceso,
+        al ofrecer una plataforma interoperable de pagos digitales que impulsó la inclusión financiera y el comercio
+        electrónico.
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <i class="fas fa-globe"></i>
+          <h3>Penetración Internet</h3>
+          <p class="value">60% → 83.9%</p>
+          <p class="label">2019 vs 2025 (+23.9 puntos)</p>
+        </div>
+        <div class="card">
+          <i class="fas fa-bolt"></i>
+          <h3>Impulso por DEUNA</h3>
+          <p class="value">2020</p>
+          <p class="label">Año de lanzamiento – Acelerador principal</p>
+        </div>
+        <div class="card">
+          <i class="fas fa-chart-line"></i>
+          <h3>Crecimiento E-commerce</h3>
+          <p class="value">+219%</p>
+          <p class="label">2020-2024</p>
+        </div>
+      </div>
+
+      <h3>Evolución Clave (2019-2025)</h3>
+      <div class="chart-container">
+        <canvas id="crecimientoChart"></canvas>
+      </div>
+
+      <h3>Hitos Importantes</h3>
+      <div class="card" style="text-align:left;">
+        <ul class="detailed">
+          <li><strong>2019:</strong> Penetración internet ~60%. E-commerce incipiente.</li>
+          <li><strong>2020:</strong> Pandemia + Lanzamiento de DEUNA. Explosión de pagos digitales y e-commerce.</li>
+          <li><strong>2021-2022:</strong> Fuerte adopción de banca móvil, pagos QR y comercio electrónico.</li>
+          <li><strong>2023-2025:</strong> DEUNA supera los 6 millones de usuarios. Madurez de pagos sin conexión y
+            expansión rural.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div id="GraficosProyecciones" class="tabcontent">
+      <h2>Gráficos Comparativos y Proyecciones Futuras</h2>
+      <div class="chart-container">
+        <canvas id="radarChart"></canvas>
+      </div>
+      <div class="chart-container">
+        <canvas id="barChart"></canvas>
+      </div>
+      <h3>Proyecciones Futuras (Simulación Hipotética)</h3>
+      <p>
+        Usa el slider para simular proyecciones hasta 2030 basadas en tendencias actuales y recomendaciones. Asume
+        crecimiento anual: China +0.5-1% en penetración, +2-3 puntos en GDII; Ecuador +1-2% en penetración, +3-5 puntos
+        en GDII con implementación de políticas.
+      </p>
+      <div class="slider-container">
+        <label for="yearSlider">Año de Proyección (2025-2030):</label><br />
+        <input type="range" id="yearSlider" min="2025" max="2030" value="2025" step="1" />
+        <p>Año seleccionado: <span id="yearValue">2025</span></p>
+      </div>
+      <div class="chart-container">
+        <canvas id="projectionChart"></canvas>
+      </div>
+    </div>
+
+    <div id="Politicas" class="tabcontent">
+      <h2>Políticas y Leyes Habilitadoras (Ampliado)</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>China (Enfoque en escala, control y seguridad nacional)</h3>
+          <ul class="detailed">
+            <li><strong>Ley de Ciberseguridad (2017, actualizada en octubre 2025, vigente desde enero 2026):</strong> Es
+              la ley fundacional que regula la construcción, operación, mantenimiento y uso de redes. Obliga a medidas
+              de seguridad en redes, protección de infraestructura crítica, localización de datos sensibles en China,
+              evaluación de riesgos para proveedores extranjeros, y ahora incluye disposiciones específicas sobre
+              gobernanza ética de IA, monitoreo de riesgos en IA, y fortalecimiento de sanciones (multas más altas,
+              responsabilidad extendida). Busca proteger la soberanía cibernética, seguridad nacional y promover el
+              desarrollo saludable de la informatización.</li>
+            <li><strong>Ley de Seguridad de Datos (2021):</strong> Clasifica datos según su impacto en la seguridad
+              nacional y económica (datos "core" con máxima protección). Regula el almacenamiento, transferencia y uso
+              de datos, incluyendo requisitos de evaluación de seguridad para exportaciones de datos importantes, y
+              responde a riesgos globales como accesos extranjeros a datos chinos. Enfocada en clasificar y proteger
+              datos más allá de solo información personal.</li>
+            <li><strong>Ley de Protección de Información Personal (PIPL, 2021):</strong> Primera ley nacional integral
+              de protección de datos personales en China (similar a GDPR). Regula la recolección, uso, almacenamiento,
+              transferencia y derechos de los titulares (consentimiento, acceso, corrección, eliminación). Requiere
+              evaluación de impacto para transferencias transfronterizas, designación de responsables de protección, y
+              aplica extraterritorialmente si se procesan datos de residentes chinos. Protege derechos individuales
+              mientras equilibra con necesidades de desarrollo económico y seguridad.</li>
+            <li><strong>14º Plan Quinquenal (2021-2025) y Desarrollo de la Economía Digital:</strong> Meta cumplida de
+              que las industrias núcleo digitales alcancen 10% del PIB. Promueve infraestructura 5G, IA, nube, big data,
+              y transformación digital en industrias reales. Enfocado en innovación, competitividad y digitalización
+              como motor de crecimiento económico y social.</li>
+            <li><strong>Plan de Acción "AI Plus" (2025):</strong> Iniciativa del Consejo de Estado para integrar IA en
+              todos los sectores (ciencia, industria, consumo, bienestar, gobernanza). Meta: penetración de terminales
+              inteligentes y agentes IA >70% para 2027 y >90% para 2030. Busca "todo inteligente", impulsar nuevas
+              fuerzas productivas, y posicionar IA como motor de modernización socialista.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Ecuador (Enfoque en inclusión, derechos y cierre de brechas)</h3>
+          <ul class="detailed">
+            <li><strong>Ley Orgánica de Protección de Datos Personales (2021):</strong> Garantiza el derecho
+              constitucional a la protección de datos (Art. 66 Constitución). Regula tratamiento de datos personales
+              (acceso, decisión, protección), derechos ARCO (acceso, rectificación, cancelación, oposición),
+              consentimiento explícito, categorías especiales (sensibles con mayor protección), creación de
+              Superintendencia de Protección de Datos como autoridad de control, y sanciones. Aplica a todo tratamiento
+              en territorio o que afecte residentes ecuatorianos, excluyendo usos domésticos, periodísticos o
+              anonimizados. Alineada con estándares internacionales de derechos humanos.</li>
+            <li><strong>Ley Orgánica para la Transformación Digital y Audiovisual:</strong> Establece marco para
+              fomentar transformación digital en instituciones públicas, privadas y sociedad. Promueve digitalización de
+              servicios públicos, simplificación de trámites, interoperabilidad de sistemas, firma electrónica, gobierno
+              electrónico, incentivos a industria audiovisual digital, y fomento de contenidos digitales. Incluye
+              regulación de plataformas audiovisuales, acceso universal a servicios digitales, y alianzas
+              público-privadas para infraestructura.</li>
+            <li><strong>Política Pública para la Transformación Digital 2025-2030 (MINTEL):</strong> Hoja de ruta
+              nacional para digitalización integral. Ejes: infraestructura digital (conectividad, banda ancha), cultura
+              e inclusión digital (cierre brechas), economía digital (fomento MIPYMES, e-commerce), tecnologías
+              emergentes (IA, nube, big data), gobierno digital (servicios en línea, interoperabilidad), tratamiento y
+              seguridad de datos. Deroga política anterior (2022-2025), enfatiza madurez digital, exportaciones TIC y
+              alineación con metas ODS y desarrollo sostenible.</li>
+            <li><strong>Otras medidas clave:</strong> Facturación electrónica obligatoria (SRI), interoperabilidad de
+              sistemas públicos, firma electrónica avanzada, y avances en gobierno electrónico para trámites sin papel.
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div id="ConclusionRecomendaciones" class="tabcontent">
+      <h2>Conclusión</h2>
+      <div class="comparison-text">
+        En conclusión, aunque Ecuador ha logrado una penetración de internet ligeramente superior en términos
+        porcentuales (83.9% vs. 79.7% en China), esto no indica un nivel superior de digitalización. China lidera
+        ampliamente en escala absoluta, madurez tecnológica (5G, IA), integración económica (10% del PIB) e índices
+        globales como GDII y EGDI. Ecuador, como nación emergente, tiene una base sólida en acceso básico e inclusión,
+        pero enfrenta desafíos en infraestructura rural, adopción productiva y profundidad de uso. Para cerrar la
+        brecha, Ecuador debe inspirarse en modelos chinos adaptados a su contexto, enfocándose en inversiones
+        estratégicas y políticas ambiciosas hacia 2030.
+      </div>
+      <h2>Recomendaciones Estratégicas para Ecuador</h2>
+      <div class="grid">
+        <div class="card">
+          <i class="fas fa-tower-observation"></i>
+          <h3>1. Infraestructura Rural y 5G</h3>
+          <p>Acelerar cobertura 5G rural vía alianzas público-privadas. Meta: reducir brecha urbana-rural >50% para
+            2030.</p>
+        </div>
+        <div class="card">
+          <i class="fas fa-shield-alt"></i>
+          <h3>2. Marco Legal Datos e IA</h3>
+          <p>Actualizar leyes con sanciones directas y regulación IA. Alinear con estándares internacionales para atraer
+            inversión.</p>
+        </div>
+        <div class="card">
+          <i class="fas fa-graduation-cap"></i>
+          <h3>3. Habilidades Digitales Avanzadas</h3>
+          <p>Formación masiva en IA, ciberseguridad y herramientas digitales. Meta: 25-30% fuerza laboral con
+            competencias avanzadas 2030.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    function openTab(evt, tabName) {
+      var i, tabcontent, tablinks;
+      tabcontent = document.getElementsByClassName("tabcontent");
+      for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+      }
+      tablinks = document.getElementsByClassName("tablinks");
+      for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+      }
+      document.getElementById(tabName).style.display = "block";
+      evt.currentTarget.className += " active";
+    }
+
+    // Radar Chart
+    const radarCtx = document.getElementById("radarChart").getContext("2d");
+    const radarChart = new Chart(radarCtx, {
+      type: "radar",
+      data: {
+        labels: [
+          "Índice Digital (Huawei)",
+          "Penetración Internet (%)",
+          "EGDI ONU (normalizado)",
+          "Economía Digital al PIB (%)",
+        ],
+        datasets: [
+          {
+            label: "China",
+            data: [67.8, 79.7, 87.18, 10],
+            backgroundColor: "rgba(230, 126, 34, 0.2)",
+            borderColor: "#e67e22",
+            pointBackgroundColor: "#e67e22",
+          },
+          {
+            label: "Ecuador",
+            data: [32, 83.9, 78, 4],
+            backgroundColor: "rgba(52, 152, 219, 0.2)",
+            borderColor: "#3498db",
+            pointBackgroundColor: "#3498db",
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        scales: { r: { beginAtZero: true, max: 100 } },
+      },
+    });
+
+    // Bar Chart
+    const barCtx = document.getElementById("barChart").getContext("2d");
+    const barChart = new Chart(barCtx, {
+      type: "bar",
+      data: {
+        labels: ["Índice Digital", "Penetración Internet", "EGDI (x100)"],
+        datasets: [
+          {
+            label: "China",
+            data: [67.8, 79.7, 87.18],
+            backgroundColor: "#e67e22",
+          },
+          {
+            label: "Ecuador",
+            data: [32, 83.9, 78],
+            backgroundColor: "#3498db",
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        scales: { y: { beginAtZero: true } },
+      },
+    });
+
+    // Projection Chart + Slider
+    const projectionCtx = document.getElementById("projectionChart").getContext("2d");
+    const projectionChart = new Chart(projectionCtx, {
+      type: "line",
+      data: {
+        labels: ["Penetración Internet (%)", "Índice Digital (GDII)"],
+        datasets: [
+          {
+            label: "China",
+            data: [79.7, 67.8],
+            borderColor: "#e67e22",
+            fill: false,
+          },
+          {
+            label: "Ecuador",
+            data: [83.9, 32],
+            borderColor: "#3498db",
+            fill: false,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        scales: { y: { beginAtZero: true } },
+      },
+    });
+
+    const slider = document.getElementById("yearSlider");
+    const yearValue = document.getElementById("yearValue");
+    slider.oninput = function () {
+      const year = parseInt(this.value);
+      yearValue.textContent = year;
+      const yearsFrom2025 = year - 2025;
+
+      const chinaPen = 79.7 + yearsFrom2025 * 0.8;
+      const ecuadorPen = 83.9 + yearsFrom2025 * 1.2;
+      const chinaGDII = 67.8 + yearsFrom2025 * 2.5;
+      const ecuadorGDII = 32 + yearsFrom2025 * 4;
+
+      projectionChart.data.datasets[0].data = [chinaPen, chinaGDII];
+      projectionChart.data.datasets[1].data = [ecuadorPen, ecuadorGDII];
+      projectionChart.update();
+    };
+
+    // Impacto Chart
+    const impactoCtx = document.getElementById("impactoChart").getContext("2d");
+    new Chart(impactoCtx, {
+      type: "line",
+      data: {
+        labels: ["2020", "2021", "2022", "2023", "2024", "2025"],
+        datasets: [
+          {
+            label: "E-commerce (US$ mil millones)",
+            data: [2.5, 3.3, 4.5, 5.2, 6.4, 6.8],
+            borderColor: "#3498db",
+            tension: 0.3,
+            fill: false
+          },
+          {
+            label: "Usuarios DEUNA (millones)",
+            data: [0.5, 1.8, 3.0, 4.5, 5.5, 6.0],
+            borderColor: "#e67e22",
+            tension: 0.3,
+            fill: false
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        scales: { y: { beginAtZero: true } }
+      }
+    });
+
+    // Crecimiento Post-Pandemia Chart
+    const crecimientoCtx = document.getElementById("crecimientoChart").getContext("2d");
+    new Chart(crecimientoCtx, {
+      type: "line",
+      data: {
+        labels: ["2019", "2020", "2021", "2022", "2023", "2024", "2025"],
+        datasets: [
+          {
+            label: "Penetración Internet (%)",
+            data: [60, 70, 75, 78, 80, 82, 83.9],
+            borderColor: "#3498db",
+            tension: 0.3,
+            fill: false
+          },
+          {
+            label: "E-commerce (US$ mil millones)",
+            data: [1.8, 2.5, 3.3, 4.5, 5.2, 6.4, 6.8],
+            borderColor: "#e67e22",
+            tension: 0.3,
+            fill: false
+          },
+          {
+            label: "Usuarios DEUNA (millones)",
+            data: [0, 0.5, 1.8, 3.0, 4.5, 5.5, 6.0],
+            borderColor: "#27ae60",
+            tension: 0.3,
+            fill: false
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        scales: { y: { beginAtZero: true } },
+        plugins: { legend: { position: "top" } }
+      }
+    });
+  </script>
+</body>
+
+</html>
