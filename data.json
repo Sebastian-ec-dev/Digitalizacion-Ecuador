@@ -393,7 +393,8 @@
       "institution": "Elaboración propia / Fuentes múltiples (DataReportal, BCE, DEUNA, Huawei, ONU, CECE, MINTEL)",
       "state": "Disponible y en uso (2026)",
       "image": "https://images.unsplash.com/photo-1551288049-b1f9d0c3a95f?auto=format&fit=crop&q=80",
-      "link": "./Dashboard.html"
+      "link": "./dashboard.html"
     }
   ]
 }
+
